@@ -122,7 +122,10 @@ function draw() {
       }
     }
   }
+  collapseNextCell();
+}
 
+function collapseNextCell(){
   // Pick cell with least entropy
   let gridCopy = grid.slice();
   gridCopy = gridCopy.filter((a) => !a.collapsed);
