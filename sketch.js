@@ -3,6 +3,8 @@ const tileImages = [];
 
 let grid = [];
 
+let myQueue = [];
+
 const DIM = 25;
 
 function preload() {
