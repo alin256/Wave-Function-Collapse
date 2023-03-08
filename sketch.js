@@ -16,9 +16,13 @@ function preload() {
   
   let params = getURLParams();
   let path = 'tiles/circuit-coding-train';
+  let prefix = '';
   if (params) {
     if (params["tileset"]) {
       path = "tiles/" + params["tileset"];
+    }
+    if (params["prefix"]){
+      prefix = params["prefix"];
     }
     if (params["setup"]) {
       setupType = parseInt(params["setup"]);
@@ -27,7 +31,7 @@ function preload() {
 
   
   for (let i = 0; i < setupType + 1; i++) {
-    tileImages[i] = loadImage(`${path}/${i}.png`);
+    tileImages[i] = loadImage(`${path}/${prefix}${i}.png`);
   }
 }
 
