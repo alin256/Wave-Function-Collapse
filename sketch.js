@@ -26,7 +26,7 @@ function preload() {
   }
 
   
-  for (let i = 0; i < 13; i++) {
+  for (let i = 0; i < setupType + 1; i++) {
     tileImages[i] = loadImage(`${path}/${i}.png`);
   }
 }
