@@ -11,7 +11,9 @@ Straight out of quantum mechanics, Wave Function Collapse is an algorithm for pr
 ## Use-case links
 
 https://al-digital.no/Wave-Function-Collapse/?tileset=rail&setup=6&prefix=tile
+
 https://al-digital.no/Wave-Function-Collapse/?tileset=circuit-coding-train
+
 https://al-digital.no/Wave-Function-Collapse/?tileset=circuit
 
 ## Plan
