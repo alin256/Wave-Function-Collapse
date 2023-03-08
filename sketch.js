@@ -12,8 +12,16 @@ function preload() {
   // for (let i = 0; i < 7; i++) {
   //   tileImages[i] = loadImage(`${path}/tile${i}.png`);
   // }
+  
+  let params = getURLParams();
+  let path = 'tiles/circuit-coding-train';
+  if (params) {
+    if (params["tileset"]) {
+      path = "tiles/" + params["tileset"];
+    }
+  }
 
-  const path = 'tiles/circuit-coding-train';
+  
   for (let i = 0; i < 13; i++) {
     tileImages[i] = loadImage(`${path}/${i}.png`);
   }
