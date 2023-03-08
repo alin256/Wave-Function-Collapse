@@ -8,6 +8,12 @@ Straight out of quantum mechanics, Wave Function Collapse is an algorithm for pr
 - [Wave Function Collapse algorithm source](https://github.com/mxgmn/WaveFunctionCollapse)
 - [Wave Function Collapse Processing forum discussion](https://discourse.processing.org/t/wave-collapse-function-algorithm-in-processing/12983)
 
+## Use-case links
+
+https://al-digital.no/Wave-Function-Collapse/?tileset=rail&setup=6&prefix=tile
+https://al-digital.no/Wave-Function-Collapse/?tileset=circuit-coding-train
+https://al-digital.no/Wave-Function-Collapse/?tileset=circuit
+
 ## Plan
 
 ### Completed
