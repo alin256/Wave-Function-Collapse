@@ -21,7 +21,7 @@ function preload() {
       path = "tiles/" + params["tileset"];
     }
     if (params["setup"]) {
-      setupType = params["setup"];
+      setupType = parseInt(params["setup"]);
     }
   }
 
