@@ -10,6 +10,9 @@ let colorToTiles = {
 // Grid of cells for the Wave Function Collapse algorithm
 let grid2d;
 
+const dx = [-1, 0, 1, -1, 0, 1, -1, 0, 1];
+const dy = [-1, -1, -1, 0, 0, 0, 1, 1, 1];
+
 // Refactored variables names
 // Number of cells along one dimension of the grid
 let GRID_SIZE = 20;
@@ -22,6 +25,7 @@ let w;
 // Turn on or off rotations and reflections
 const ROTATIONS = false;
 const REFLECTIONS = false;
+const MC_STEPS = 1000;
 
 function preload() {
   sourceImage = loadImage('images/flowers.png');
@@ -67,7 +71,7 @@ function initializeGrid() {
   for (let j = 0; j < GRID_SIZE; j++) {
     grid2d.push([]);
     for (let i = 0; i < GRID_SIZE; i++) {
-      grid2d[j].push(new Cell(colorToTiles['colorTile'], i * w, j * w, w, count));
+      grid2d[j].push(new Cell(colorToTiles, i * w, j * w, w, count));
       count++;
     }
   }
@@ -77,6 +81,7 @@ function initializeGrid() {
 function draw() {
   // Run Wave Function Collapse
   // wfc();
+  updateNeighbours();
 
   // Show the grid 
   for (let i = 0; i < GRID_SIZE; i++) {
@@ -147,50 +152,69 @@ function wfc() {
 
 }
 
-function reduceEntropy(grid, cell, depth) {
-  // Stop propagation if max depth is reached or cell already checked
-  if (depth > MAX_RECURSION_DEPTH || cell.checked) return;
-
-  // Mark cell as checked
-  cell.checked = true;
-
-  // Need to redraw this cell
-  cell.needsRedraw = true;
-
-  let index = cell.index;
-  let i = floor(index % GRID_SIZE);
-  let j = floor(index / GRID_SIZE);
-
-  // Update neighboring cells based on adjacency rules
-  // RIGHT
-  if (i + 1 < GRID_SIZE) {
-    let rightCell = grid[i + 1 + j * GRID_SIZE];
-    if (checkOptions(cell, rightCell, EAST)) {
-      reduceEntropy(grid, rightCell, depth + 1);
+function updateNeighbours() {
+  //reset likelihooods
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      let cell = grid2d[i][j];
+      cell.resetLikelihoods();
+      cell.scaleProbabilities();
     }
   }
 
-  // LEFT
-  if (i - 1 >= 0) {
-    let leftCell = grid[i - 1 + j * GRID_SIZE];
-    if (checkOptions(cell, leftCell, WEST)) {
-      reduceEntropy(grid, leftCell, depth + 1);
+  // Loop through each cell in the grid
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      let cell = grid2d[i][j];
+      for (let step = 0; step < MC_STEPS; step++) {
+        // Randomly select a color from the cell's options
+        let randNum = random(0, 1);
+        let colorInd = 0;
+        while (randNum > cell.probabilities[colorInd]) {
+          randNum -= cell.probabilities[colorInd];
+          colorInd++;
+        }
+        colorInd--;
+
+        // Randomly select a tile for that color
+        let colorIndex = cell.colorArray[colorInd];
+        let curTiles = colorToTiles
+        let possibleTiles = colorToTiles[colorIndex]['tiles'];
+        randNum = random(0, 1) * colorToTiles[colorIndex]['length'];
+
+        let tileIndex = 0;
+        while (randNum > possibleTiles[tileIndex].frequency) {
+          randNum -= possibleTiles[tileIndex].frequency;
+          tileIndex++;
+        }
+        tileIndex--;
+
+        const selectedTile = possibleTiles[tileIndex];
+        const tileImage = selectedTile.img;
+        
+
+        // Check each direction (up, down, left, right)
+        for (let k = 0; k < dx.length; k++) {
+          let ni = i + dx[k];
+          let nj = j + dy[k];
+
+
+          // Check if the neighbor is within bounds
+          if (ni >= 0 && ni < GRID_SIZE && nj >= 0 && nj < GRID_SIZE) {
+            let c = tileImage.get(dx[k], dy[k]);
+            let colorInd = rgbToIndex([c[0], c[1], c[2]]);
+            const neighbor = grid2d[ni][nj];
+            neighbor.likelihoods[colorInd] += 1;
+          }
+        }
+      }
     }
   }
 
-  // DOWN
-  if (j + 1 < GRID_SIZE) {
-    let downCell = grid[i + (j + 1) * GRID_SIZE];
-    if (checkOptions(cell, downCell, SOUTH)) {
-      reduceEntropy(grid, downCell, depth + 1);
-    }
-  }
-
-  // UP
-  if (j - 1 >= 0) {
-    let upCell = grid[i + (j - 1) * GRID_SIZE];
-    if (checkOptions(cell, upCell, NORTH)) {
-      reduceEntropy(grid, upCell, depth + 1);
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      let cell = grid2d[i][j];
+      cell.scaleLikelihoods();
     }
   }
 }

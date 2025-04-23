@@ -25,7 +25,7 @@ function getCenterColor(img) {
   let r = img.pixels[index + 0];
   let g = img.pixels[index + 1];
   let b = img.pixels[index + 2];
-  return [r, g, b ];
+  return [r, g, b];
 }
 
 function rgbToIndex([r, g, b]) {
@@ -81,17 +81,20 @@ function extractTiles(img) {
 //extract center colors for tiles
 function extractTileColors(tiles) {
   let colorToTiles = {
-    'length': 0,
-    'colorTile': {}
+
   }
   for (let tile of tiles) {
     let rgbIndex = rgbToIndex(getCenterColor(tile.img));
     if (!(rgbIndex in colorToTiles)) {
-      colorToTiles['colorTile'][rgbIndex] = [tile];      
-    }else {
-      colorToTiles['colorTile'][rgbIndex].push(tile);
+      colorToTiles[rgbIndex] = {
+        'tiles': [tile],
+        'length': tile.frequency
+      };
+    } else {
+      colorToTiles[rgbIndex]['tiles'].push(tile);
+      colorToTiles[rgbIndex]['length'] += tile.frequency;
     }
-    colorToTiles['length'] += tile.frequency;
+
   }
   return colorToTiles;
 }

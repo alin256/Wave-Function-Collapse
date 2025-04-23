@@ -26,6 +26,8 @@ class Cell {
       this.probabilities[i] = random(1, 1000);
     }
 
+    this.likelihoods = [];
+
     // Has it been collapsed to a single tile?
     this.collapsed = false;
     // Has it already been checked during recursion?
@@ -35,6 +37,13 @@ class Cell {
     this.needsRedraw = true;
   }
 
+  resetLikelihoods() {
+    this.likelihoods = [];
+    for (let i = 0; i < this.colorArray.length; i++) {
+      this.likelihoods.push(0);
+    }
+  }
+
   scaleProbablities(){
     let total = 0;
     for (let i = 0; i < this.probabilities.length; i++) {
@@ -42,6 +51,17 @@ class Cell {
     }
     for (let i = 0; i < this.probabilities.length; i++) {
       this.probabilities[i] /= total;
+    }
+  }
+
+  scaleLikelihoods(){
+    // normalize the likelihoods
+    let totalLikelihood = 0;
+    for (let i = 0; i < this.likelihoods.length; i++) {
+      totalLikelihood += this.likelihoods[i];
+    }
+    for (let i = 0; i < this.likelihoods.length; i++) {
+      this.likelihoods[i] /= totalLikelihood;
     }
   }
 
@@ -111,6 +131,17 @@ class Cell {
           let barHeight = probability * this.w;
           let x = this.x + barWidth*i;
           let y = this.y + this.w - barHeight;
+          rect(x, y, barWidth*0.9, barHeight);
+        }
+
+        fill(0);
+        noStroke();
+        // draw the likelihoods
+        for (let i = 0; i < this.likelihoods.length; i++) {
+          let likelihood = this.likelihoods[i];
+          let barHeight = likelihood * this.w;
+          let x = this.x + barWidth*i;
+          let y = this.y;
           rect(x, y, barWidth*0.9, barHeight);
         }
       }
