@@ -7,9 +7,9 @@ let grid;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
-let GRID_SIZE = 20;
+let GRID_SIZE = 50;
 // Maximum depth for recursive checking of cells
-let MAX_RECURSION_DEPTH = 16;
+let MAX_RECURSION_DEPTH = 100;
 // Size of each tile (3x3 by default)
 let TILE_SIZE = 3;
 let w;
@@ -137,7 +137,7 @@ function wfc() {
   }
 
   // Find cells with the lowest entropy (simplified as fewest options left)
-  // Thie refactored method to find the lowest entropy cells avoids sorting
+  // The refactored method to find the lowest entropy cells avoids sorting
   let minEntropy = Infinity;
   let lowestEntropyCells = [];
 

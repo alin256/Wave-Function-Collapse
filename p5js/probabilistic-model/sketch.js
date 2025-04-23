@@ -25,7 +25,8 @@ let w;
 // Turn on or off rotations and reflections
 const ROTATIONS = false;
 const REFLECTIONS = false;
-const MC_STEPS = 10;
+const MC_STEPS = 100;
+const COLLAPSE_PROB = 0.9;
 
 function preload() {
   sourceImage = loadImage('images/flowers.png');
@@ -58,7 +59,7 @@ function setup() {
       loop();
     }
   });
-  
+
   frameRate(1);
 }
 
@@ -226,6 +227,7 @@ function updateNeighbours() {
       let cell = grid2d[i][j];
       cell.scaleLikelihoods();
       cell.updateProbabilities();
+      cell.tryCollapse(COLLAPSE_PROB);
     }
   }
 }
