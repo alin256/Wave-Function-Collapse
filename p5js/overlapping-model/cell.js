@@ -13,16 +13,27 @@ class Cell {
 
     // The indices of tiles that can be placed in this cell
     this.options = [];
+    this.probabilities = [];
 
     // Has it been collapsed to a single tile?
     this.collapsed = false;
     // Has it already been checked during recursion?
     this.checked = false;
+  
+    this.uniqueColors = new Set();
+    for (let i = 0; i < tiles.length; i++) {
+      this.uniqueColors.add(rgbToIndex(getCenterColor(tiles[i].img)));
+    }
+    for (let color of this.uniqueColors) {
+      this.probabilities.push(random(1, 1000));
+    }
 
     // Initialize the options with all possible tile indices
     for (let i = 0; i < tiles.length; i++) {
       this.options.push(i);
     }
+
+
 
     // This keeps track of what the previous options were
     // Saves recalculating entropy if nothing has changed
@@ -30,6 +41,16 @@ class Cell {
 
     // Variable to track if cell needs to be redrawn
     this.needsRedraw = true;
+  }
+
+  scaleProbablities(){
+    let total = 0;
+    for (let i = 0; i < this.probabilities.length; i++) {
+      total += this.probabilities[i];
+    }
+    for (let i = 0; i < this.probabilities.length; i++) {
+      this.probabilities[i] /= total;
+    }
   }
 
   calculateEntropy() {
@@ -92,6 +113,17 @@ class Cell {
         textSize(this.w / 2);
         textAlign(CENTER, CENTER);
         text(this.options.length, this.x + this.w / 2, this.y + this.w / 2);
+
+        this.scaleProbablities();
+        fill(255);
+        noStroke();
+        let barWidth = this.w / this.probabilities.length;
+        for (let i = 0; i < this.probabilities.length; i++) {
+          let barHeight = this.probabilities[i] * this.w;
+          let x = this.x + barWidth*i;
+          let y = this.y + this.w - barHeight;
+          rect(x, y, barWidth*0.9, barHeight);
+        }
       }
       // No need to redraw until something has changed
       this.needsRedraw = true;

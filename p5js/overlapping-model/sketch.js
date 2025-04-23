@@ -15,7 +15,7 @@ let TILE_SIZE = 3;
 let w;
 
 // Turn on or off rotations and reflections
-const ROTATIONS = true;
+const ROTATIONS = false;
 const REFLECTIONS = false;
 
 function preload() {
@@ -47,6 +47,7 @@ function setup() {
       reduceEntropy(grid, cell, 0);
     }
   }
+
   // add pause checkbox
   let pauseCheckbox = createCheckbox('Pause', false);
   pauseCheckbox.changed(() => {
@@ -87,6 +88,45 @@ function draw() {
     // Reset all cells to "unchecked"
     grid[i].checked = false;
   }
+}
+
+function smoothColapse() {
+  // suggest probabilities based on observations
+  for (let cell of grid) {
+    cell.scaleProbablities();
+  }
+
+  let grid2d = [];
+  let observations2d = [];
+  for (let i = 0; i < GRID_SIZE; i++) {
+    grid2d.push([]);
+    observations2d.push([]);
+    for (let j = 0; j < GRID_SIZE; j++) {
+      grid2d[i].push(grid[i + j * GRID_SIZE]);
+      observations2d[i].push([]);
+      let colors = Array.from(grid[i + j * GRID_SIZE].uniqueColors);
+      for (let k = 0; k < colors.length; k++) {
+        observations2d[i][j].push(0);
+      }
+    }
+  }
+  // now observations2d is a 2D is an empty arrey of likelihoods
+  // for each cell in the grid2d
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      let cell = grid2d[i][j];
+      // get a tile sample proportional to probability
+      //let tileSample = 
+      let colors = Array.from(cell.uniqueColors);
+      for (let k = 0; k < colors.length; k++) {
+        observations2d[i][j][k] += cell.probabilities[k];
+      }
+    }
+  }
+
+
+
+
 }
 
 // The Wave Function Collapse algorithm

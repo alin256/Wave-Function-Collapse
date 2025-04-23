@@ -18,15 +18,24 @@ function renderImage(img, x, y, w) {
   square(x, y, img.width * w);
 }
 
-// Render only the center pixel of an image
-function renderCell(img, x, y, w) {
+function getCenterColor(img) {
   let i = floor(img.width / 2);
   let j = floor(img.width / 2);
   let index = (i + j * img.width) * 4;
   let r = img.pixels[index + 0];
   let g = img.pixels[index + 1];
   let b = img.pixels[index + 2];
-  fill(r, g, b);
+  return [r, g, b ];
+}
+
+function rgbToIndex([r, g, b]) {
+  return (r << 16) | (g << 8) | b;
+}
+
+// Render only the center pixel of an image
+function renderCell(img, x, y, w) {
+  rgb = getCenterColor(img);
+  fill(rgb);
   noStroke();
   square(x, y, w);
 }
