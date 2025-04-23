@@ -25,7 +25,7 @@ let w;
 // Turn on or off rotations and reflections
 const ROTATIONS = false;
 const REFLECTIONS = false;
-const MC_STEPS = 1000;
+const MC_STEPS = 10;
 
 function preload() {
   sourceImage = loadImage('images/flowers.png');
@@ -47,7 +47,7 @@ function setup() {
   initializeGrid();
 
   // Perform initial wave function collapse step
-  wfc();
+  // wfc();
 
   // add pause checkbox
   let pauseCheckbox = createCheckbox('Pause', false);
@@ -58,6 +58,8 @@ function setup() {
       loop();
     }
   });
+  
+  frameRate(1);
 }
 
 function initializeGrid() {
@@ -92,6 +94,7 @@ function draw() {
       }
     }
   }
+  // noLoop();
 }
 
 function smoothColapse() {
@@ -173,12 +176,15 @@ function updateNeighbours() {
         while (randNum > cell.probabilities[colorInd]) {
           randNum -= cell.probabilities[colorInd];
           colorInd++;
+          if (colorInd >= cell.colorArray.length) {
+            colorInd--;
+            break;
+          }
         }
-        colorInd--;
+        // colorInd--;
 
         // Randomly select a tile for that color
         let colorIndex = cell.colorArray[colorInd];
-        let curTiles = colorToTiles
         let possibleTiles = colorToTiles[colorIndex]['tiles'];
         randNum = random(0, 1) * colorToTiles[colorIndex]['length'];
 
@@ -186,8 +192,12 @@ function updateNeighbours() {
         while (randNum > possibleTiles[tileIndex].frequency) {
           randNum -= possibleTiles[tileIndex].frequency;
           tileIndex++;
+          if (tileIndex >= possibleTiles.length) {
+            tileIndex--;
+            break;
+          }
         }
-        tileIndex--;
+        // tileIndex--;
 
         const selectedTile = possibleTiles[tileIndex];
         const tileImage = selectedTile.img;
@@ -202,7 +212,7 @@ function updateNeighbours() {
           // Check if the neighbor is within bounds
           if (ni >= 0 && ni < GRID_SIZE && nj >= 0 && nj < GRID_SIZE) {
             let c = tileImage.get(dx[k], dy[k]);
-            let colorInd = rgbToIndex([c[0], c[1], c[2]]);
+            let colorInd = cell.colorIndex[rgbToIndex([c[0], c[1], c[2]])];
             const neighbor = grid2d[ni][nj];
             neighbor.likelihoods[colorInd] += 1;
           }
@@ -215,6 +225,7 @@ function updateNeighbours() {
     for (let j = 0; j < GRID_SIZE; j++) {
       let cell = grid2d[i][j];
       cell.scaleLikelihoods();
+      cell.updateProbabilities();
     }
   }
 }

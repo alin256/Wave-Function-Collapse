@@ -44,7 +44,7 @@ class Cell {
     }
   }
 
-  scaleProbablities(){
+  scaleProbabilities(){
     let total = 0;
     for (let i = 0; i < this.probabilities.length; i++) {
       total += this.probabilities[i];
@@ -64,6 +64,14 @@ class Cell {
       this.likelihoods[i] /= totalLikelihood;
     }
   }
+
+  updateProbabilities(){
+    for (let i = 0; i < this.probabilities.length; i++) {
+      this.probabilities[i] *= this.likelihoods[i];
+    }
+    this.scaleProbabilities();
+  }
+
 
   calculateEntropy() {
     // Don't need to recalculate entropy if nothing changed
@@ -100,7 +108,7 @@ class Cell {
         let img = tiles[tileIndex].img;
         renderCell(img, this.x, this.y, this.w);
       } else {
-        this.scaleProbablities();
+        this.scaleProbabilities();
         
         let sumR = 0;
         let sumG = 0;
