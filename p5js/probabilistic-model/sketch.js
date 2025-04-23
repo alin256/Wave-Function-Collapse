@@ -2,8 +2,13 @@
 let sourceImage;
 // Tiles extracted from the source image
 let tiles;
+// Let's keep separate colors fot the tile center
+let colorToTiles = {
+  'length': 0,
+  'colorTile': {}
+}
 // Grid of cells for the Wave Function Collapse algorithm
-let grid;
+let grid2d;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
@@ -29,24 +34,16 @@ function setup() {
 
   // Extract tiles and calculate their adjacencies
   tiles = extractTiles(sourceImage);
-  for (let tile of tiles) {
-    tile.calculateNeighbors(tiles);
-  }
+  // for (let tile of tiles) {
+  //   tile.calculateNeighbors(tiles);
+  // }
+  colorToTiles = extractTileColors(tiles);
 
   // Create the grid
   initializeGrid();
 
   // Perform initial wave function collapse step
   wfc();
-
-  // The WFC function only collapses one cell at a time
-  // This extra bit collapses any other cells that can be
-  for (let cell of grid) {
-    if (cell.options.length == 1) {
-      cell.collapsed = true;
-      reduceEntropy(grid, cell, 0);
-    }
-  }
 
   // add pause checkbox
   let pauseCheckbox = createCheckbox('Pause', false);
@@ -64,12 +61,13 @@ function initializeGrid() {
   background(0);
 
   // Clear the grid
-  grid = [];
+  grid2d = [];
   // Initialize the grid with cells
   let count = 0;
   for (let j = 0; j < GRID_SIZE; j++) {
+    grid2d.push([]);
     for (let i = 0; i < GRID_SIZE; i++) {
-      grid.push(new Cell(tiles, i * w, j * w, w, count));
+      grid2d[j].push(new Cell(colorToTiles['colorTile'], i * w, j * w, w, count));
       count++;
     }
   }
@@ -78,21 +76,22 @@ function initializeGrid() {
 
 function draw() {
   // Run Wave Function Collapse
-  wfc();
+  // wfc();
 
-  // Show the grid
-  for (let i = 0; i < grid.length; i++) {
-    // Draw each cell
-    grid[i].show();
-
-    // Reset all cells to "unchecked"
-    grid[i].checked = false;
+  // Show the grid 
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      let cell = grid2d[i][j];
+      if (cell.needsRedraw) {
+        cell.show();
+      }
+    }
   }
 }
 
 function smoothColapse() {
   // suggest probabilities based on observations
-  for (let cell of grid) {
+  for (let cell of grid2d) {
     cell.scaleProbablities();
   }
 
@@ -102,9 +101,9 @@ function smoothColapse() {
     grid2d.push([]);
     observations2d.push([]);
     for (let j = 0; j < GRID_SIZE; j++) {
-      grid2d[i].push(grid[i + j * GRID_SIZE]);
+      grid2d[i].push(grid2d[i + j * GRID_SIZE]);
       observations2d[i].push([]);
-      let colors = Array.from(grid[i + j * GRID_SIZE].uniqueColors);
+      let colors = Array.from(grid2d[i + j * GRID_SIZE].uniqueColors);
       for (let k = 0; k < colors.length; k++) {
         observations2d[i][j].push(0);
       }
@@ -131,63 +130,21 @@ function smoothColapse() {
 
 // The Wave Function Collapse algorithm
 function wfc() {
-  // Calculate entropy for each cell
-  for (let cell of grid) {
-    cell.calculateEntropy();
-  }
 
-  // Find cells with the lowest entropy (simplified as fewest options left)
-  // Thie refactored method to find the lowest entropy cells avoids sorting
-  let minEntropy = Infinity;
-  let lowestEntropyCells = [];
-
-  for (let cell of grid) {
-    if (!cell.collapsed) {
-      if (cell.entropy < minEntropy) {
-        minEntropy = cell.entropy;
-        lowestEntropyCells = [cell];
-      } else if (cell.entropy === minEntropy) {
-        lowestEntropyCells.push(cell);
-      }
-    }
-  }
 
   // We're done if all cells are collapsed!
-  if (lowestEntropyCells.length == 0) {
+  if (false) {
     noLoop();
     return;
   }
 
   // Randomly select one of the lowest entropy cells to collapse
-  const cell = random(lowestEntropyCells);
-  cell.collapsed = true;
 
   // Need to redraw this cell
-  cell.needsRedraw = true;
+  // cell.needsRedraw = true;
 
   // Choose one option randomly from the cell's options
-  const pick = random(cell.options);
 
-  // If there are no possible tiles that fit there!
-  if (pick == undefined) {
-    console.log('ran into a conflict');
-    initializeGrid();
-    return;
-  }
-
-  // Set the final tile
-  cell.options = [pick];
-
-  // Propagate entropy reduction to neighbors
-  reduceEntropy(grid, cell, 0);
-
-  // Collapse anything that can be!
-  for (let cell of grid) {
-    if (cell.options.length == 1) {
-      cell.collapsed = true;
-      reduceEntropy(grid, cell, 0);
-    }
-  }
 }
 
 function reduceEntropy(grid, cell, depth) {

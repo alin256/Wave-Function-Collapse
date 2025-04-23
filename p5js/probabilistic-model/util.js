@@ -32,6 +32,13 @@ function rgbToIndex([r, g, b]) {
   return (r << 16) | (g << 8) | b;
 }
 
+function indexToRGB(index) {
+  let r = (index >> 16) & 0xFF;
+  let g = (index >> 8) & 0xFF;
+  let b = index & 0xFF;
+  return [r, g, b];
+}
+
 // Render only the center pixel of an image
 function renderCell(img, x, y, w) {
   rgb = getCenterColor(img);
@@ -69,6 +76,24 @@ function extractTiles(img) {
     }
   }
   return Object.values(uniqueTiles);
+}
+
+//extract center colors for tiles
+function extractTileColors(tiles) {
+  let colorToTiles = {
+    'length': 0,
+    'colorTile': {}
+  }
+  for (let tile of tiles) {
+    let rgbIndex = rgbToIndex(getCenterColor(tile.img));
+    if (!(rgbIndex in colorToTiles)) {
+      colorToTiles['colorTile'][rgbIndex] = [tile];      
+    }else {
+      colorToTiles['colorTile'][rgbIndex].push(tile);
+    }
+    colorToTiles['length'] += tile.frequency;
+  }
+  return colorToTiles;
 }
 
 // Copy a tile from a source image to a new image
