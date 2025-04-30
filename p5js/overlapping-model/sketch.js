@@ -20,9 +20,11 @@ let w;
 
 let chooseModelDropDown;
 let queueLengthTextBox;
+let computationalCostTextBox;
+
 let gridCopy;
 let chosenCellIndex;
-
+let computationalCost;
 let recoveringParadox = false;
 let reductionQueue = [];
 let shuffledOptions = [];
@@ -90,6 +92,9 @@ function setup() {
   // Add a textbox that will show queue length
   queueLengthTextBox = createP("Processed queue: " + reductionQueue.length);
 
+  // Add a textbox that will show computational cost
+  computationalCostTextBox = createP("Computational cost: " + JSON.stringify(computationalCost));
+
 }
 
 function setupTiles() {
@@ -106,6 +111,12 @@ function setupTiles() {
   recoveringParadox = false;
   reductionQueue = [];
   shuffledOptions = [];  
+
+  computationalCost= {
+    gridIteration: 0,
+    queueOperations: 0,
+    informationPropagation: 0
+  }
 
   // start the loop if not already
   loop();
@@ -145,6 +156,10 @@ function initializeGrid() {
 }
 
 function draw() {
+  computationalCostTextBox.html(`Costs: 
+    grid ${computationalCost.gridIteration.toFixed(0)}, 
+    queue ${computationalCost.queueOperations.toFixed(0)}, 
+    propagation ${computationalCost.informationPropagation.toFixed(0)}`);
   // Run Wave Function Collapse
   wfc();
 
@@ -162,6 +177,7 @@ function draw() {
 function wfc() {
   if (reductionQueue.length == 0) {
     if (!recoveringParadox) {
+      const startGrid = performance.now();
       // Calculate entropy for each cell
       for (let cell of grid) {
         cell.calculateEntropy();
@@ -200,8 +216,10 @@ function wfc() {
       chosenCellIndex = cell.index;
       gridCopy = JSON.parse(JSON.stringify(grid));
       shuffledOptions = shuffle(cell.options);
+
+      const endGrid = performance.now();
+      computationalCost.gridIteration += (endGrid - startGrid);
     }
-    // TODO - rerun this code if we did not converge
 
     // Choose one option randomly from the cell's options
     const pick = shuffledOptions.pop();
@@ -269,7 +287,8 @@ function wfc() {
 }
 
 function addToQueue(cellDepthQueueArray, cell, depth) {
-  // TODO implment a O(1) queue for better performance
+  const startQ = performance.now();
+  // implmentation of a O(1) queue would not matter much...
   // Check if the cell is already in the queue
   for (let i = 0; i < cellDepthQueueArray.length; i++) {
     if (cellDepthQueueArray[i].cell.index == cell.index) {
@@ -282,12 +301,20 @@ function addToQueue(cellDepthQueueArray, cell, depth) {
     cell: cell,
     depth: depth
   });
+  computationalCost.queueOperations += (performance.now() - startQ);
 }
 
-
+function queuePop(cellDepthQueueArray) {
+  const startQ = performance.now();
+  const next = cellDepthQueueArray.shift();
+  computationalCost.queueOperations += (performance.now() - startQ);
+  return next;
+}
 
 function reduceEntropyOnce(grid, cellDepthQueueArray) {
-  cellDepth = cellDepthQueueArray.shift();
+  cellDepth = queuePop(cellDepthQueueArray);
+  const queueCostBefore = computationalCost.queueOperations;
+  const startReduce = performance.now();
   let cell = cellDepth.cell;
   let depth = cellDepth.depth;
 
@@ -354,6 +381,10 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
       needsPropogation++;
     }
   }
+
+  const endReduce = performance.now();
+  computationalCost.informationPropagation += (endReduce - startReduce) ;
+  computationalCost.informationPropagation -= (computationalCost.queueOperations - queueCostBefore);
 
   if (needsPropogation > 0) {
     return "Need to reduce entropy";
