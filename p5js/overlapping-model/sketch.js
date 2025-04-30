@@ -171,8 +171,6 @@ function draw() {
     // Draw each cell
     grid[i].show();
 
-    // Reset all cells to "unchecked"
-    grid[i].checked = false;
   }
 }
 
@@ -323,9 +321,6 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
   // Stop propagation if max depth is reached or cell already checked
   if (depth > MAX_RECURSION_DEPTH) return "Recursion limit reached";
   // console.log("Recursion depth limit reached at " + depth);
-
-  // Mark cell as checked
-  cell.checked = true;
 
   if (cell.options.length == 0) {
     // Ignore conflicts
