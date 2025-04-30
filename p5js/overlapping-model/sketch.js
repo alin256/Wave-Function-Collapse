@@ -11,7 +11,7 @@ let GRID_SIZE = 60;
 // Maximum depth for recursive checking of cells
 let MAX_RECURSION_DEPTH = 1000000000;
 // const REDUCTIONS_PER_FRAME = 10000;
-let reductionPerFrame = 1000;
+let reductionPerFrame = 100;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
 let TILE_SIZE = 3;
@@ -38,6 +38,7 @@ function preload() {
 }
 
 function setup() {
+  randomSeed(0); // fix seed
   createCanvas(720, 720);
   // Cell width based on canvas size and grid size
   w = width / GRID_SIZE;
@@ -115,7 +116,8 @@ function setupTiles() {
   computationalCost= {
     gridIteration: 0,
     queueOperations: 0,
-    informationPropagation: 0
+    informationPropagation: 0,
+    steps: 0
   }
 
   // start the loop if not already
@@ -156,10 +158,11 @@ function initializeGrid() {
 }
 
 function draw() {
-  computationalCostTextBox.html(`Costs: 
-    grid ${computationalCost.gridIteration.toFixed(0)}, 
-    queue ${computationalCost.queueOperations.toFixed(0)}, 
-    propagation ${computationalCost.informationPropagation.toFixed(0)}`);
+  computationalCost.steps++;
+  computationalCostTextBox.html(`Steps: ${computationalCost.steps} 
+    (grid ${computationalCost.gridIteration.toFixed(0)}ms, 
+    queue ${computationalCost.queueOperations.toFixed(0)}ms, 
+    propagation ${computationalCost.informationPropagation.toFixed(0)}ms)`);
   // Run Wave Function Collapse
   wfc();
 
@@ -262,16 +265,15 @@ function wfc() {
       }
     }
 
-
     let endTime = performance.now();
     let spentTime = endTime - startTime;
 
-    const suggestedReductionsPerFrame = Math.floor(reductionCount * TARGET_UPDATE_TIME_MS / spentTime);
-    if (suggestedReductionsPerFrame > 0 && suggestedReductionsPerFrame < MAX_RECURSION_DEPTH &&
-      (reductionPerFrame * 2 < suggestedReductionsPerFrame
-        || reductionPerFrame * (1. / 2.) > suggestedReductionsPerFrame)) {
-      reductionPerFrame = suggestedReductionsPerFrame;
-    }
+    // const suggestedReductionsPerFrame = Math.floor(reductionCount * TARGET_UPDATE_TIME_MS / spentTime);
+    // if (suggestedReductionsPerFrame > 0 && suggestedReductionsPerFrame < MAX_RECURSION_DEPTH &&
+    //   (reductionPerFrame * 2 < suggestedReductionsPerFrame
+    //     || reductionPerFrame * (1. / 2.) > suggestedReductionsPerFrame)) {
+    //   reductionPerFrame = suggestedReductionsPerFrame;
+    // }
 
     queueLengthTextBox.html(`Processed queue (out of ${reductionPerFrame}): ${reductionCount}`);
     // your drawing code here
