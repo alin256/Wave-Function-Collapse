@@ -131,7 +131,10 @@ function reInitializeGrid(gridSave) {
   for (let j = 0; j < GRID_SIZE; j++) {
     for (let i = 0; i < GRID_SIZE; i++) {
       let cell = new Cell(tiles, i * w, j * w, w, count);
-      cell.options = gridSave[count].options;
+      cell.options = new OptionsBitSet(tiles.length);
+      cell.options.bitArray = gridSave[count].options.bitArray;
+      cell.options.lenghtComputed = false;
+      // gridSave[count].options;
       cell.collapsed = gridSave[count].collapsed;
       cell.needsRedraw = true;
       grid.push(cell);
@@ -218,7 +221,7 @@ function wfc() {
       // copying in case something would go wrong
       chosenCellIndex = cell.index;
       gridCopy = JSON.parse(JSON.stringify(grid));
-      shuffledOptions = shuffle(cell.options);
+      shuffledOptions = shuffle(cell.options.toIndexArray());
 
       const endGrid = performance.now();
       computationalCost.gridIteration += (endGrid - startGrid);
@@ -241,7 +244,8 @@ function wfc() {
 
     // Set the final tile
     let workingCell = grid[chosenCellIndex];
-    workingCell.options = [pick];
+    workingCell.options = new OptionsBitSet(tiles.length);
+    workingCell.options.add(pick);
 
     // add to queue
     addToQueue(reductionQueue, workingCell, 0);
@@ -327,7 +331,7 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
   // Mark cell as checked
   cell.checked = true;
 
-  if (cell.options.length == 0) {
+  if (cell.options.size() == 0) {
     // Ignore conflicts
     console.log("Updating cell: ran into a conflict");
     // Need to redraw this cell
@@ -335,7 +339,7 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
     return PARADOX;
   }
 
-  if (cell.options.length == 1) {
+  if (cell.options.size() == 1) {
     cell.collapsed = true;
   }
 
@@ -399,26 +403,24 @@ function checkOptionsReduced(cell, neighbor, direction) {
   // Check if the neighbor is valid and not already collapsed
   if (neighbor && !neighbor.collapsed) {
     // Collect valid options based on the current cell's adjacency rules
-    // TODO implement options as sets with O(min(n, k)) for intersection for faster performance
-    let validOptions = [];
-    for (let option of cell.options) {
+    let validOptionsSet = new OptionsBitSet(); // todo find the correct dimension
+    // let validOptions = [];
+    for (let option of cell.options.toIndexArray()) {
       if (!tiles[option]) {
+        // what does this do?
         continue;
       }
-      validOptions = validOptions.concat(tiles[option].neighbors[direction]);
+      validOptionsSet.unionWith(tiles[option].neighbors[direction]);
+      // validOptions = validOptions.concat(tiles[option].neighbors[direction]);
     }
 
+    let oldOptLength = neighbor.options.size();
 
-    let oldOptLength = neighbor.options.length;
-    // Filter the neighbor's options to retain only those that are valid
-    if (neighbor.options.length < validOptions.length) {
-      neighbor.options = neighbor.options.filter((elt) => validOptions.includes(elt));
-    }
-    else{
-      neighbor.options = validOptions.filter((elt) => neighbor.options.includes(elt));
-    }
+    // Intersect the neighbor's options with the valid options
+    neighbor.options.intersectWith(validOptionsSet);
+    let newSize = neighbor.options.size();
 
-    if (neighbor.options.length < oldOptLength) {
+    if (newSize < oldOptLength) {
       return true;
     } else {
       return false;

@@ -2,8 +2,22 @@
 class OptionsBitSet{
     constructor(maxOptions) {
         this.bitArray = new Uint32Array(Math.ceil(maxOptions / 32));
+        this.maxOptions = maxOptions;
         this.internal_lenght = 0;
+        this.indexArray = [];
         this.lenghtComputed = true;
+    }
+
+    fill(){
+        for (let i = 0; i < this.bitArray.length; i++){
+            this.bitArray[i] = 0xFFFFFFFF;
+        }
+        // removing unused bits for consistency
+        let emptyInd = this.maxOptions - Math.floor(this.maxOptions / 32) * 32;
+        for (let j = emptyInd; j< 32; j++){
+            this.bitArray[this.bitArray.length - 1] &= ~(1 << j);
+        }
+        this.lenghtComputed = false;
     }
 
     add(index){
@@ -52,35 +66,31 @@ class OptionsBitSet{
         this.lenghtComputed = false;
     }
 
-    toIndexArray(){
-        let out = [];
-        // lets also compute the size
+    recomputeIndexArray(){
         this.internal_lenght = 0;
+        this.indexArray = [];
         for(let i = 0; i < this.bitArray.length; i++){
             for (let j = 0; j < 32; j++){
                 if(this.bitArray[i] & (1 << j)){
-                    out.push(i * 32 + j);
+                    this.indexArray.push(i * 32 + j);
                     this.internal_lenght++;
                 }
             }
         }
         this.lenghtComputed = true;
-        return out;
+    }
+
+    toIndexArray(){
+        if (!this.lenghtComputed){
+            this.recomputeIndexArray();
+        }
+        return this.indexArray;
     }
 
     size(){
-        if(this.lenghtComputed){
-            return this.internal_lenght;
+        if(!this.lenghtComputed){
+            this.recomputeIndexArray();
         }
-        this.internal_lenght = 0;
-        for(let i = 0; i < this.bitArray.length; i++){
-            for (let j = 0; j < 32; j++){
-                if(this.bitArray[i] & (1 << j)){
-                    this.internal_lenght++;
-                }
-            }
-        }
-        this.lenghtComputed = true;
         return this.internal_lenght;
     }
 }

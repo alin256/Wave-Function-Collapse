@@ -13,15 +13,13 @@ class Cell {
     this.index = index;
 
     // The indices of tiles that can be placed in this cell
-    this.options = [];
+    this.options = new OptionsBitSet(tiles.length); 
 
     // Has it been collapsed to a single tile?
     this.collapsed = false;
 
     // Initialize the options with all possible tile indices
-    for (let i = 0; i < tiles.length; i++) {
-      this.options.push(i);
-    }
+    this.options.fill();
 
     // This keeps track of what the previous options were
     // Saves time recalculating entropy if nothing has changed
@@ -35,21 +33,21 @@ class Cell {
   calculateEntropy() {
     // Don't need to recalculate entropy if nothing changed
     // Possible issue if same # of options but different options?
-    if (this.previousTotalOptions == this.options.length) {
+    if (this.previousTotalOptions == this.options.size()) {
       return;
     }
     // Now save the new current total
-    this.previousTotalOptions = this.options.length;
+    this.previousTotalOptions = this.options.size();
 
     // Compute total frequency of all of the options
     let totalFrequency = 0;
-    for (let option of this.options) {
+    for (let option of this.options.toIndexArray()) {
       totalFrequency += tiles[option].frequency;
     }
 
     // Calculate "Shannon" Entropy
     this.entropy = 0;
-    for (let option of this.options) {
+    for (let option of this.options.toIndexArray()) {
       // Calculate probability for each tile
       let frequency = tiles[option].frequency;
       let probability = frequency / totalFrequency;
@@ -62,18 +60,19 @@ class Cell {
   show() {
     // Only if the cell needs to be redrawn
     if (this.needsRedraw) {
-      if (this.options.length == 0) {
+      console.log(this.options)
+      if (this.options.size() == 0) {
         // Ignore conflicts
       } else if (this.collapsed) {
-        let tileIndex = this.options[0];
+        let tileIndex = this.options.toIndexArray()[0];
         let img = tiles[tileIndex].img;
         renderCell(img, this.x, this.y, this.w);
       } else {
         let sumR = 0;
         let sumG = 0;
         let sumB = 0;
-        for (let i = 0; i < this.options.length; i++) {
-          let tileIndex = this.options[i];
+        for (let i = 0; i < this.options.size(); i++) {
+          let tileIndex = this.options.toIndexArray()[i];
           let img = tiles[tileIndex].img;
           let centerIndex = floor(TILE_SIZE / 2);
           let index = (centerIndex + centerIndex * TILE_SIZE) * 4;
@@ -81,9 +80,9 @@ class Cell {
           sumG += img.pixels[index + 1];
           sumB += img.pixels[index + 2];
         }
-        sumR /= this.options.length;
-        sumG /= this.options.length;
-        sumB /= this.options.length;
+        sumR /= this.options.size();
+        sumG /= this.options.size();
+        sumB /= this.options.size();
         fill(sumR, sumG, sumB);
         noStroke();
         square(this.x, this.y, this.w);
@@ -93,7 +92,7 @@ class Cell {
           noStroke();
           textSize(this.w / 2);
           textAlign(CENTER, CENTER);
-          text(this.options.length, this.x + this.w / 2, this.y + this.w / 2);
+          text(this.options.size(), this.x + this.w / 2, this.y + this.w / 2);
         }
 
       }
