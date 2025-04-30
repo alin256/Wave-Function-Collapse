@@ -7,14 +7,14 @@ let grid;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
-let GRID_SIZE = 60;
+let GRID_SIZE = 120;
 // Maximum depth for recursive checking of cells
 let MAX_RECURSION_DEPTH = 1000000000;
 // const REDUCTIONS_PER_FRAME = 10000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 3;
+let TILE_SIZE = 4;
 let PARADOX = "paradox";
 let w;
 
@@ -32,7 +32,7 @@ const ROTATIONS = false;
 const REFLECTIONS = false;
 
 function preload() {
-  sourceImage = loadImage('images/3Bricks.png');
+  sourceImage = loadImage('images/Cat.png');
 }
 
 function setup() {
@@ -145,6 +145,25 @@ function initializeGrid() {
 }
 
 function draw() {
+  // this slices an object 
+  // let tileIndex = 0;
+  // let nextI = 0;
+  // for (let i = 1; i <= GRID_SIZE - TILE_SIZE - 1; i+= TILE_SIZE+1) {
+  //   for (let j = 1; j <= GRID_SIZE - TILE_SIZE - 1; j+= TILE_SIZE+1) {
+  //     renderImage(tiles[tileIndex].img, j*w, i*w, w);
+  //     text(tiles[tileIndex].frequency, (j+TILE_SIZE/2)*w, (i+TILE_SIZE/2)*w);
+
+  //     nextI = i;
+  //     tileIndex++;
+  //     if (tileIndex >= tiles.length) {
+  //       return;
+  //     }
+
+  //   }
+  // }
+
+
+  // return;
   // Run Wave Function Collapse
   wfc();
 
