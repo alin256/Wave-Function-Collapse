@@ -7,7 +7,7 @@ let grid;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
-let GRID_SIZE = 30;
+let GRID_SIZE = 120;
 // Maximum depth for recursive checking of cells
 let MAX_RECURSION_DEPTH = 1000000000;
 // const REDUCTIONS_PER_FRAME = 10000;
@@ -22,6 +22,8 @@ let chooseModelDropDown;
 let queueLengthTextBox;
 let computationalCostTextBox;
 
+let cellPriorityQueue;
+let cellTmpQueue = [];
 let gridCopy;
 let chosenCellIndex;
 let computationalCost;
@@ -113,6 +115,8 @@ function setupTiles() {
   reductionQueue = [];
   shuffledOptions = [];  
 
+  cellPriorityQueue = new PriorityQueue();
+
   computationalCost= {
     gridIteration: 0,
     queueOperations: 0,
@@ -170,7 +174,6 @@ function draw() {
   for (let i = 0; i < grid.length; i++) {
     // Draw each cell
     grid[i].show();
-
   }
 }
 
