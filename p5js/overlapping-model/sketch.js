@@ -7,7 +7,7 @@ let grid;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
-let GRID_SIZE = 60;
+let GRID_SIZE = 30;
 // Maximum depth for recursive checking of cells
 let MAX_RECURSION_DEPTH = 1000000000;
 // const REDUCTIONS_PER_FRAME = 10000;
@@ -408,9 +408,15 @@ function checkOptionsReduced(cell, neighbor, direction) {
       validOptions = validOptions.concat(tiles[option].neighbors[direction]);
     }
 
+
     let oldOptLength = neighbor.options.length;
     // Filter the neighbor's options to retain only those that are valid
-    neighbor.options = neighbor.options.filter((elt) => validOptions.includes(elt));
+    if (neighbor.options.length < validOptions.length) {
+      neighbor.options = neighbor.options.filter((elt) => validOptions.includes(elt));
+    }
+    else{
+      neighbor.options = validOptions.filter((elt) => neighbor.options.includes(elt));
+    }
 
     if (neighbor.options.length < oldOptLength) {
       return true;
