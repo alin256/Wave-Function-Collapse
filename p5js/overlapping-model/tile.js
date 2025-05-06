@@ -1,13 +1,8 @@
-// Constants for all directions (refactored names)
-const EAST = 0;
-const WEST = 1;
-const NORTH = 2;
-const SOUTH = 3;
-
+// Constants arrays for all directions (refactored names)
 const DIRECTIONS = 4;
 const D_I = [1, -1, 0, 0];
 const D_J = [0, 0, -1, 1];
-const OPPOSITE_DIRECTION = [WEST, EAST, SOUTH, NORTH];
+const OPPOSITE_DIRECTION = [1, 0, 3, 2];
 
 // A Tile is a segment of the source image
 class Tile {
@@ -30,27 +25,14 @@ class Tile {
   calculateNeighbors(tiles) {
     for (let i = 0; i < tiles.length; i++) {
       for (let k = 0; k < DIRECTIONS; k++) {
-        let oldOverlapping = this.overlapping(tiles[i], k);
-        let newOverlapping = this.overlappingNoIfs(tiles[i], OPPOSITE_DIRECTION[k]);
-        if (oldOverlapping !== newOverlapping) {
-          console.log("Error in overlappingNoIfs");
+        if (this.overlappingNoIfs(tiles[i], OPPOSITE_DIRECTION[k])) {
+          this.neighbors[k].push(i);
         }
-      }
-      if (this.overlapping(tiles[i], EAST)) {
-        this.neighbors[EAST].push(i);
-      }
-      if (this.overlapping(tiles[i], WEST)) {
-        this.neighbors[WEST].push(i);
-      }
-      if (this.overlapping(tiles[i], NORTH)) {
-        this.neighbors[NORTH].push(i);
-      }
-      if (this.overlapping(tiles[i], SOUTH)) {
-        this.neighbors[SOUTH].push(i);
       }
     }
   }
 
+  // Check if two tiles overlap in the specified direction
   overlappingNoIfs(other, direction) {
     for (let i = 0; i < TILE_SIZE; i++) {
       let i1 = i + D_I[direction];
@@ -69,54 +51,6 @@ class Tile {
     return true;
   }
 
-  // Check if two tiles overlap in the specified direction
-  overlapping(other, direction) {
-    if (direction == EAST) {
-      for (let i = 1; i < TILE_SIZE; i++) {
-        for (let j = 0; j < TILE_SIZE; j++) {
-          let indexA = (i + j * TILE_SIZE) * 4;
-          let indexB = (i - 1 + j * TILE_SIZE) * 4;
-          if (differentColor(this.img, indexA, other.img, indexB)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    } else if (direction == WEST) {
-      for (let i = 0; i < TILE_SIZE - 1; i++) {
-        for (let j = 0; j < TILE_SIZE; j++) {
-          let indexA = (i + j * TILE_SIZE) * 4;
-          let indexB = (i + 1 + j * TILE_SIZE) * 4;
-          if (differentColor(this.img, indexA, other.img, indexB)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    } else if (direction == NORTH) {
-      for (let j = 0; j < TILE_SIZE - 1; j++) {
-        for (let i = 0; i < TILE_SIZE; i++) {
-          let indexA = (i + j * TILE_SIZE) * 4;
-          let indexB = (i + (j + 1) * TILE_SIZE) * 4;
-          if (differentColor(this.img, indexA, other.img, indexB)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    } else if (direction == SOUTH) {
-      for (let j = 1; j < TILE_SIZE; j++) {
-        for (let i = 0; i < TILE_SIZE; i++) {
-          let indexA = (i + j * TILE_SIZE) * 4;
-          let indexB = (i + (j - 1) * TILE_SIZE) * 4;
-          if (differentColor(this.img, indexA, other.img, indexB)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-  }
 }
 
 // Check if two pixels have different colors

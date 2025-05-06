@@ -328,16 +328,6 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
     }
   }
 
-  // Update neighboring cells based on adjacency rules
-  // RIGHT
-  if (i + 1 < GRID_SIZE) {
-    let rightCell = grid[i + 1 + j * GRID_SIZE];
-    if (checkOptionsReduced(cell, rightCell, EAST)) {
-      addToQueue(cellDepthQueueArray, rightCell, depth + 1);
-      needsPropogation++;
-    }
-  }
-
   if (needsPropogation > 0) {
     return "Need to reduce entropy";
   } else {
