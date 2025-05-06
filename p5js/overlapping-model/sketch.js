@@ -14,7 +14,7 @@ let MAX_RECURSION_DEPTH = 1000000000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 3;
+let TILE_SIZE = 5;
 let PARADOX = "paradox";
 let w;
 
@@ -32,7 +32,7 @@ const ROTATIONS = false;
 const REFLECTIONS = false;
 
 function preload() {
-  sourceImage = loadImage('images/Flowers.png');
+  sourceImage = loadImage('images/Strebelle60.png');
 }
 
 function setup() {
@@ -342,9 +342,10 @@ function checkOptionsReduced(cell, neighbor, direction) {
     // TODO implement options as sets with O(min(n, k)) for intersection for faster performance
     let validOptions = [];
     for (let option of cell.options) {
-      if (!tiles[option]) {
-        continue;
-      }
+      // this should never be a problem
+      // if (!tiles[option]) {
+      //   continue;
+      // }
       validOptions = validOptions.concat(tiles[option].neighbors[direction]);
     }
 
