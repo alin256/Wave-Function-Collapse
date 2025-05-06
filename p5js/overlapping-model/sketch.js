@@ -314,39 +314,26 @@ function reduceEntropyOnce(grid, cellDepthQueueArray) {
 
   let needsPropogation = 0;
 
+  // Check options alternatively
+  for (let k = 0; k < DIRECTIONS; k++) {
+    let i1 = i + D_I[k];
+    if (i1 < 0 || i1 >= GRID_SIZE) continue;
+    let j1 = j + D_J[k];
+    if (j1 < 0 || j1 >= GRID_SIZE) continue;
+    let neighborCell = grid[i1 + j1 * GRID_SIZE];
+
+    if (checkOptionsReduced(cell, neighborCell, k)) {
+      addToQueue(cellDepthQueueArray, neighborCell, depth + 1);
+      needsPropogation++;
+    }
+  }
+
   // Update neighboring cells based on adjacency rules
   // RIGHT
   if (i + 1 < GRID_SIZE) {
     let rightCell = grid[i + 1 + j * GRID_SIZE];
     if (checkOptionsReduced(cell, rightCell, EAST)) {
       addToQueue(cellDepthQueueArray, rightCell, depth + 1);
-      needsPropogation++;
-    }
-  }
-
-  // LEFT
-  if (i - 1 >= 0) {
-    let leftCell = grid[i - 1 + j * GRID_SIZE];
-    if (checkOptionsReduced(cell, leftCell, WEST)) {
-      addToQueue(cellDepthQueueArray, leftCell, depth + 1);
-      needsPropogation++;
-    }
-  }
-
-  // DOWN
-  if (j + 1 < GRID_SIZE) {
-    let downCell = grid[i + (j + 1) * GRID_SIZE];
-    if (checkOptionsReduced(cell, downCell, SOUTH)) {
-      addToQueue(cellDepthQueueArray, downCell, depth + 1);
-      needsPropogation++;
-    }
-  }
-
-  // UP
-  if (j - 1 >= 0) {
-    let upCell = grid[i + (j - 1) * GRID_SIZE];
-    if (checkOptionsReduced(cell, upCell, NORTH)) {
-      addToQueue(cellDepthQueueArray, upCell, depth + 1);
       needsPropogation++;
     }
   }

@@ -21,10 +21,9 @@ class Tile {
 
     // An array to keep track of adjacency rules
     this.neighbors = [];
-    this.neighbors[EAST] = [];
-    this.neighbors[WEST] = [];
-    this.neighbors[NORTH] = [];
-    this.neighbors[SOUTH] = [];
+    for (let k = 0; k < DIRECTIONS; k++) {
+      this.neighbors[k] = [];
+    }
   }
 
   // Calculate which tiles can be neighbors in each direction
