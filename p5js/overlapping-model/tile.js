@@ -4,6 +4,11 @@ const WEST = 1;
 const NORTH = 2;
 const SOUTH = 3;
 
+const DIRECTIONS = 4;
+const D_I = [1, -1, 0, 0];
+const D_J = [0, 0, -1, 1];
+const OPPOSITE_DIRECTION = [WEST, EAST, SOUTH, NORTH];
+
 // A Tile is a segment of the source image
 class Tile {
   constructor(img, i) {
@@ -25,6 +30,13 @@ class Tile {
   // Calculate which tiles can be neighbors in each direction
   calculateNeighbors(tiles) {
     for (let i = 0; i < tiles.length; i++) {
+      for (let k = 0; k < DIRECTIONS; k++) {
+        let oldOverlapping = this.overlapping(tiles[i], k);
+        let newOverlapping = this.overlappingNoIfs(tiles[i], OPPOSITE_DIRECTION[k]);
+        if (oldOverlapping !== newOverlapping) {
+          console.log("Error in overlappingNoIfs");
+        }
+      }
       if (this.overlapping(tiles[i], EAST)) {
         this.neighbors[EAST].push(i);
       }
@@ -38,6 +50,24 @@ class Tile {
         this.neighbors[SOUTH].push(i);
       }
     }
+  }
+
+  overlappingNoIfs(other, direction) {
+    for (let i = 0; i < TILE_SIZE; i++) {
+      let i1 = i + D_I[direction];
+      if (i1 < 0 || i1 >= TILE_SIZE) continue;
+      for (let j = 0; j < TILE_SIZE; j++) {
+        let j1 = j + D_J[direction];
+        if (j1 < 0 || j1 >= TILE_SIZE) continue;
+
+        let indexA = (i +  j * TILE_SIZE) * 4;
+        let indexB = (i1 + j1 * TILE_SIZE) * 4;
+        if (differentColor(this.img, indexA, other.img, indexB)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   // Check if two tiles overlap in the specified direction

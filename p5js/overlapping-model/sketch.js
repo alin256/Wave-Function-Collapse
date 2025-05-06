@@ -7,14 +7,14 @@ let grid;
 
 // Refactored variables names
 // Number of cells along one dimension of the grid
-let GRID_SIZE = 120;
+let GRID_SIZE = 60;
 // Maximum depth for recursive checking of cells
 let MAX_RECURSION_DEPTH = 1000000000;
 // const REDUCTIONS_PER_FRAME = 10000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 4;
+let TILE_SIZE = 3;
 let PARADOX = "paradox";
 let w;
 
@@ -32,7 +32,7 @@ const ROTATIONS = false;
 const REFLECTIONS = false;
 
 function preload() {
-  sourceImage = loadImage('images/Cat.png');
+  sourceImage = loadImage('images/Flowers.png');
 }
 
 function setup() {
