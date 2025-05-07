@@ -14,7 +14,7 @@ let MAX_RECURSION_DEPTH = 1000000000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 5;
+let TILE_SIZE = 3;
 let PARADOX = "paradox";
 let w;
 
@@ -32,7 +32,7 @@ const ROTATIONS = false;
 const REFLECTIONS = false;
 
 function preload() {
-  sourceImage = loadImage('images/Strebelle60.png');
+  sourceImage = loadImage('images/Flowers.png');
 }
 
 function setup() {
@@ -173,6 +173,53 @@ function draw() {
     grid[i].show();
 
   }
+
+  const mouseLocationCell = getCellIndexAtMousePos();
+  if (mouseLocationCell != null) {
+    const cell = grid[mouseLocationCell.index];
+    if (cell && cell.collapsed){
+      const img = tiles[cell.options[0]].img;
+      const affectedCellsRelative = renderFullImage(img, mouseLocationCell.i*w, mouseLocationCell.j*w, w, cell.options[0]);
+      for (let i = 0; i < affectedCellsRelative.length; i++) {
+        const cellRelative = affectedCellsRelative[i];
+        const x = mouseLocationCell.i + cellRelative.di;
+        const y = mouseLocationCell.j + cellRelative.dj;
+        if (x < 0 || x >= GRID_SIZE) continue;
+        if (y < 0 || y >= GRID_SIZE) continue;
+        const index = x + y * GRID_SIZE;
+        const cellToUpdate = grid[index];
+        cellToUpdate.needsRedraw = true;
+      }
+    }
+  }
+}
+
+function isMouseInRect(x, y, w, h) {
+  return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
+}
+
+function isHoveringOverCanvas() {
+  return isMouseInRect(0, 0, width, height);
+}
+
+function getMousePosOnCanvas() {
+  if (isHoveringOverCanvas()) {
+    return { x: mouseX, y: mouseY };
+  }
+  return null;
+}
+
+function getCellIndexAtMousePos() {
+  const mousePos = getMousePosOnCanvas();
+  if (mousePos) {
+    const x = mousePos.x;
+    const y = mousePos.y;
+    const i = floor(x / w);
+    const j = floor(y / w);
+    const index = i + j * GRID_SIZE;
+    return {i: i, j: j, index: index};
+  }
+  return null;
 }
 
 // The Wave Function Collapse algorithm
@@ -202,7 +249,7 @@ function wfc() {
 
       // We're done if all cells are collapsed!
       if (lowestEntropyCells.length == 0) {
-        noLoop();
+        // noLoop();
         return;
       }
 

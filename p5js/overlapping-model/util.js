@@ -18,6 +18,33 @@ function renderImage(img, x, y, w) {
   square(x, y, img.width * w);
 }
 
+function renderFullImage(img, x, y, w, tileId) {
+  let centerI = floor(img.width / 2);
+  let centerJ = floor(img.width / 2);
+  const affectedCellsRelative = [];
+  // iterate through the image pixels
+  // let index = (i + j * img.width) * 4;
+  for (let i = 0; i < img.width; i++) {
+    for (let j = 0; j < img.height; j++) {
+      let index = (i + j * img.width) * 4;
+      let r = img.pixels[index + 0];
+      let g = img.pixels[index + 1];
+      let b = img.pixels[index + 2];
+      fill(r, g, b);
+      stroke(50);
+      square(x + (i - centerI) * w + 0.5, y + (j - centerJ)*w +0.5, w-1);
+      affectedCellsRelative.push({di: i - centerI, dj: j - centerJ});
+    }
+  }
+  if (tileId != undefined) {
+    noFill();
+    strokeWeight(1);
+    stroke(0);
+    text(tileId, x, y+w);
+  }
+  return affectedCellsRelative;
+}
+
 // Render only the center pixel of an image
 function renderCell(img, x, y, w) {
   let i = floor(img.width / 2);

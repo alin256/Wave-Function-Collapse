@@ -29,6 +29,7 @@ Sand.png
 Sewers.png
 SimpleKnot.png
 SimpleWall.png
+Strebelle60.png
 Skew2.png
 Skyline.png
 SmileCity.png
