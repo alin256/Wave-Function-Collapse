@@ -14,7 +14,7 @@ let MAX_RECURSION_DEPTH = 1000000000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 3;
+let TILE_SIZE = 4;
 let PARADOX = "paradox";
 let w;
 
@@ -151,7 +151,11 @@ function initializeGrid() {
   let count = 0;
   for (let j = 0; j < GRID_SIZE; j++) {
     for (let i = 0; i < GRID_SIZE; i++) {
-      grid.push(new Cell(tiles, i * w, j * w, w, count));
+      const newCell = new Cell(tiles, i * w, j * w, w, count);
+      grid.push(newCell);
+      if (count == 0){
+        newCell.options = [newCell.options[0]];
+      }
       count++;
     }
   }
