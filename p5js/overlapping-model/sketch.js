@@ -14,7 +14,7 @@ let MAX_RECURSION_DEPTH = 1000000000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 3;
+let TILE_SIZE = 7;
 let PARADOX = "paradox";
 let w;
 
@@ -30,9 +30,10 @@ let shuffledOptions = [];
 // Turn on or off rotations and reflections
 const ROTATIONS = false;
 const REFLECTIONS = false;
+const PERIODIC_BOUNDARIES = false;
 
 function preload() {
-  sourceImage = loadImage('images/Flowers.png');
+  sourceImage = loadImage('images/Strebelle240.png');
 }
 
 function setup() {

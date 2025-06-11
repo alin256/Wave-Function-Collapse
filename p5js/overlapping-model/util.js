@@ -65,8 +65,10 @@ function extractTiles(img) {
 
   img.loadPixels();
   let indexCounter = 0;
-  for (let j = 0; j < img.height; j++) {
-    for (let i = 0; i < img.width; i++) {
+  // subtract tile size if PERIODIC_BOUNDARIES = false
+  const boundaryOffset = PERIODIC_BOUNDARIES ? 0 : TILE_SIZE - 1;
+  for (let j = 0; j < img.height - boundaryOffset; j++) {
+    for (let i = 0; i < img.width - boundaryOffset; i++) {
       // Create a new image for each tile
       let tileImage = createImage(TILE_SIZE, TILE_SIZE);
       // Copy segment of source image
@@ -94,6 +96,10 @@ function copyTile(source, sx, sy, w, dest) {
   dest.loadPixels();
   for (let i = 0; i < w; i++) {
     for (let j = 0; j < w; j++) {
+      if (sx + i >= source.width || sy + j >= source.height) {
+        console.log("Tile out of bounds. Using periodic boundaries.");
+        return;
+      }
       let pixelI = (sx + i) % source.width;
       let pixelJ = (sy + j) % source.height;
       let sourceIndex = (pixelI + pixelJ * source.width) * 4;
