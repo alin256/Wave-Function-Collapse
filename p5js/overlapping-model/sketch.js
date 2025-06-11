@@ -14,7 +14,7 @@ let MAX_RECURSION_DEPTH = 1000000000;
 let reductionPerFrame = 1000;
 const TARGET_UPDATE_TIME_MS = 15; // Target frame rate of 60 FPS
 // Size of each tile (3x3 by default)
-let TILE_SIZE = 7;
+let TILE_SIZE = 3;
 let PARADOX = "paradox";
 let w;
 
@@ -31,12 +31,19 @@ let shuffledOptions = [];
 const ROTATIONS = false;
 const REFLECTIONS = false;
 const PERIODIC_BOUNDARIES = false;
+const deafaultImage = 'images/Font.png'
 
 function preload() {
-  sourceImage = loadImage('images/Strebelle240.png');
+  sourceImage = loadImage(deafaultImage);
 }
 
 function setup() {
+  const img = createImg(deafaultImage, 'source image');
+  img.id('source-image');
+  img.style('image-rendering', 'pixelated');
+  img.style('height', '50px'); // fixed height
+  img.style('width', 'auto');   // preserve aspect ratio
+
   createCanvas(720, 720);
   // Cell width based on canvas size and grid size
   w = width / GRID_SIZE;
@@ -60,6 +67,12 @@ function setup() {
     const selectedValue = chooseModelDropDown.value();
     // check if it is the file name ending with png
     if (selectedValue.endsWith('.png')) {
+      // Update DOM image
+      const domImg = select('#source-image');
+      if (domImg) {
+        domImg.attribute('src', `images/${selectedValue}`);
+      }
+          
       // Load the selected image
       sourceImage = loadImage(`images/${selectedValue}`, () => {
         // Setup tiles again with the new image

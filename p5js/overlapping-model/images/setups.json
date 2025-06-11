@@ -1,0 +1,178 @@
+{
+  "3Bricks": {
+    "filename": "3Bricks.png",
+    "tilesize": 3
+  },
+  "WalledDot": {
+    "filename": "WalledDot.png",
+    "tilesize": 3
+  },
+  "Mazelike": {
+    "filename": "Mazelike.png",
+    "tilesize": 3
+  },
+  "Paths": {
+    "filename": "Paths.png",
+    "tilesize": 3
+  },
+  "BrownFox": {
+    "filename": "BrownFox.png",
+    "tilesize": 3
+  },
+  "ct_logo": {
+    "filename": "ct_logo.png",
+    "tilesize": 3
+  },
+  "RedMaze": {
+    "filename": "RedMaze.png",
+    "tilesize": 3
+  },
+  "labirinthBlack": {
+    "filename": "labirinthBlack.png",
+    "tilesize": 3
+  },
+  "Hogs": {
+    "filename": "Hogs.png",
+    "tilesize": 3
+  },
+  "Town": {
+    "filename": "Town.png",
+    "tilesize": 3
+  },
+  "Flowers": {
+    "filename": "Flowers.png",
+    "tilesize": 3
+  },
+  "Office2": {
+    "filename": "Office2.png",
+    "tilesize": 3
+  },
+  "Angular": {
+    "filename": "Angular.png",
+    "tilesize": 3
+  },
+  "city": {
+    "filename": "city.png",
+    "tilesize": 3
+  },
+  "Rule126": {
+    "filename": "Rule126.png",
+    "tilesize": 3
+  },
+  "SimpleKnot": {
+    "filename": "SimpleKnot.png",
+    "tilesize": 3
+  },
+  "Platformer": {
+    "filename": "Platformer.png",
+    "tilesize": 3
+  },
+  "punks4colorsmall": {
+    "filename": "punks4colorsmall.png",
+    "tilesize": 3
+  },
+  "ColoredCity": {
+    "filename": "ColoredCity.png",
+    "tilesize": 3
+  },
+  "Knot": {
+    "filename": "Knot.png",
+    "tilesize": 3
+  },
+  "Font": {
+    "filename": "Font.png",
+    "tilesize": 3
+  },
+  "Skew2": {
+    "filename": "Skew2.png",
+    "tilesize": 3
+  },
+  "Cat": {
+    "filename": "Cat.png",
+    "tilesize": 3
+  },
+  "SmileCity": {
+    "filename": "SmileCity.png",
+    "tilesize": 3
+  },
+  "Strebelle240": {
+    "filename": "Strebelle240.png",
+    "tilesize": 3
+  },
+  "SimpleWall": {
+    "filename": "SimpleWall.png",
+    "tilesize": 3
+  },
+  "Office": {
+    "filename": "Office.png",
+    "tilesize": 3
+  },
+  "MagicOffice": {
+    "filename": "MagicOffice.png",
+    "tilesize": 3
+  },
+  "Mountains": {
+    "filename": "Mountains.png",
+    "tilesize": 3
+  },
+  "Spirals": {
+    "filename": "Spirals.png",
+    "tilesize": 3
+  },
+  "water": {
+    "filename": "water.png",
+    "tilesize": 3
+  },
+  "labirinth": {
+    "filename": "labirinth.png",
+    "tilesize": 3
+  },
+  "Lake": {
+    "filename": "Lake.png",
+    "tilesize": 3
+  },
+  "Village": {
+    "filename": "Village.png",
+    "tilesize": 3
+  },
+  "Link2": {
+    "filename": "Link2.png",
+    "tilesize": 3
+  },
+  "Strebelle60": {
+    "filename": "Strebelle60.png",
+    "tilesize": 3
+  },
+  "Sand": {
+    "filename": "Sand.png",
+    "tilesize": 3
+  },
+  "Sewers": {
+    "filename": "Sewers.png",
+    "tilesize": 3
+  },
+  "Disk": {
+    "filename": "Disk.png",
+    "tilesize": 3
+  },
+  "Rooms": {
+    "filename": "Rooms.png",
+    "tilesize": 3
+  },
+  "Dungeon": {
+    "filename": "Dungeon.png",
+    "tilesize": 3
+  },
+  "Skyline": {
+    "filename": "Skyline.png",
+    "tilesize": 3
+  },
+  "RedDot": {
+    "filename": "RedDot.png",
+    "tilesize": 3
+  },
+  "example": {
+    "filename": "example.png",
+    "tilesize": 3
+  }
+}
