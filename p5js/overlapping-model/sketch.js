@@ -30,8 +30,8 @@ let shuffledOptions = [];
 // Turn on or off rotations and reflections
 const ROTATIONS = false;
 const REFLECTIONS = false;
-const PERIODIC_BOUNDARIES = false;
-const deafaultImage = 'images/Font.png'
+const PERIODIC_BOUNDARIES = true;
+const deafaultImage = 'images/Flowers.png'
 
 function preload() {
   sourceImage = loadImage(deafaultImage);
